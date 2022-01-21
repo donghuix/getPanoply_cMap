@@ -24,7 +24,7 @@ end
 
 function preprocess()
 
-    modes = {'Sequential','Divergent'};
+    modes = {'Sequential','Divergent','Topographic','Rainbow'};
     for imode = 1 : length(modes)
         
         mode = modes{imode};
@@ -69,15 +69,22 @@ function preprocess()
 
             cmaps(1).(schemes{i}) = cmap;
             % test the colormap
-            subplot_tight(8,5,i);
-
-
+            
             if strcmp(mode,'Sequential')
+                subplot_tight(8,5,i);
                 plot_globalspatial(longxy',latixy',glad');
                 caxis([0 0.1]);
             elseif strcmp(mode,'Divergent')
+                subplot_tight(8,5,i);
                 plot_globalspatial(longxy',latixy',pr_anomaly');
                 caxis([-100 100]);
+            elseif strcmp(mode,'Topographic') 
+                subplot_tight(3,2,i);
+                plot_globalspatial(longxy',latixy',ele');
+            elseif strcmp(mode,'Rainbow')
+                subplot_tight(4,2,i);
+                plot_globalspatial(longxy',latixy',ele');
+                %caxis([-100 100]);
             end
             colormap(gca,cmap); 
             title(schemes{i},'FontSize',16,'FontWeight','bold','Interpreter','none');
