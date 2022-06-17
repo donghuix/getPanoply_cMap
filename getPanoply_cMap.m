@@ -1,10 +1,14 @@
-function cmap = getPanoply_cMap(scheme,show_samples)
+function cmap = getPanoply_cMap(scheme,show_samples,data)
 
     if nargin == 1
         show_samples = 0;
     end
-    if show_samples
-        preprocess()
+    if show_samples == 1
+        preprocess();
+    elseif show_samples == 2
+        figure;
+        patch(data.xv,data.yv,data.val,'LineStyle','none');
+        preprocess(data);
     end
     
     load('cmaps.mat');
@@ -22,18 +26,32 @@ function cmap = getPanoply_cMap(scheme,show_samples)
     
 end
 
-function preprocess()
-
+function preprocess(data)
+    
+    wkdir = '/Users/xudo627/developments/getPanoply_cMap/';
+    if nargin == 1
+        show_data = 1;
+        xv  = data.xv;
+        yv  = data.yv;
+        val = data.val;
+        vmin = data.vmin;
+        vmax = data.vmax;
+        figure;
+        patch(xv,yv,val,'LineStyle','none');
+    else
+        show_data = 0;
+    end
     modes = {'Sequential','Divergent','Topographic','Rainbow'};
     for imode = 1 : length(modes)
         
         mode = modes{imode};
         
-        files = dir([mode '/*.*']);
+        files = dir([wkdir mode '/*.*']);
         files = files(3:end);
         schemes = cell(length(files),1);
-        load(['data/' mode '_test.mat']);
-
+        if ~show_data
+            load([wkdir 'data/' mode '_test.mat']);
+        end
         figure;set(gcf,'Position',[10 10 1200 900]);
         if exist('cmaps.mat','file')
             load('cmaps.mat');
@@ -72,18 +90,38 @@ function preprocess()
             
             if strcmp(mode,'Sequential')
                 subplot_tight(8,5,i);
-                plot_globalspatial(longxy',latixy',glad');
-                caxis([0 0.1]);
+                if show_data
+                    patch(xv,yv,val,'LineStyle','none');
+                    caxis([vmin vmax]);
+                else
+                    plot_globalspatial(longxy',latixy',glad');
+                    caxis([0 0.1]);
+                end
             elseif strcmp(mode,'Divergent')
                 subplot_tight(8,5,i);
-                plot_globalspatial(longxy',latixy',pr_anomaly');
-                caxis([-100 100]);
+                if show_data
+                    patch(xv,yv,val,'LineStyle','none');
+                    caxis([vmin vmax]);
+                else
+                    plot_globalspatial(longxy',latixy',pr_anomaly');
+                    caxis([-100 100]);
+                end
             elseif strcmp(mode,'Topographic') 
                 subplot_tight(3,2,i);
-                plot_globalspatial(longxy',latixy',ele');
+                if show_data
+                    patch(xv,yv,val,'LineStyle','none');
+                    caxis([vmin vmax]);
+                else
+                    plot_globalspatial(longxy',latixy',ele');
+                end
             elseif strcmp(mode,'Rainbow')
                 subplot_tight(4,2,i);
-                plot_globalspatial(longxy',latixy',ele');
+                if show_data
+                    patch(xv,yv,val,'LineStyle','none');
+                    caxis([vmin vmax]);
+                else
+                    plot_globalspatial(longxy',latixy',ele');
+                end
                 %caxis([-100 100]);
             end
             colormap(gca,cmap); 
