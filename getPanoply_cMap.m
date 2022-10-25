@@ -11,15 +11,20 @@ function cmap = getPanoply_cMap(scheme,show_samples,data)
         preprocess(data);
     end
     
-    load('cmaps.mat');
-    
-    if isfield(cmaps,scheme)
-        cmap = cmaps.(scheme);
+    if isempty(scheme)
+        cmap = [];
     else
-        disp([scheme ' is not available! Current available color scheme is: ']);
-        schemes = fieldnames(cmaps);
-        disp(schemes);
-        error('error');
+    
+        load('cmaps.mat');
+
+        if isfield(cmaps,scheme)
+            cmap = cmaps.(scheme);
+        else
+            disp([scheme ' is not available! Current available color scheme is: ']);
+            schemes = fieldnames(cmaps);
+            disp(schemes);
+            error('error');
+        end
     end
     
     
